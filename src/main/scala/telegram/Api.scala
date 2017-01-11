@@ -4,15 +4,13 @@ import utils.ResourcesParser
 
 import scala.io.Source
 
-class Api {
-  private val resourcesParser = new ResourcesParser()
-
-  def request(methodName: String): Unit = {
+object Api {
+  def request(methodName: String): String = {
     val address = "https://%s/bot%s/%s".format(
-      resourcesParser.getValue("site"),
-      resourcesParser.getValue("api_token"),
+      ResourcesParser.getValue("site"),
+      ResourcesParser.getValue("api_token"),
       methodName)
 
-    println(Source.fromURL(address).mkString)
+    Source.fromURL(address).mkString
   }
 }

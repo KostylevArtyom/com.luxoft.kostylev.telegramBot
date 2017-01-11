@@ -2,7 +2,7 @@ package utils
 
 import scala.io.Source
 
-class ResourcesParser {
+object ResourcesParser {
   private lazy val configurationMap = {
     val configurationLines = Source.fromResource("bot_configuration.properties").getLines
     configurationLines.map(line => line.split(" = "))
