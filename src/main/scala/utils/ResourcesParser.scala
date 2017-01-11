@@ -10,10 +10,6 @@ object ResourcesParser {
       .toMap
   }
 
-  def getValue(key: String): String = {
-    configurationMap.get(key) match {
-      case Some(value) => value
-      case None => throw new IllegalArgumentException("This key doesn't exist!")
-    }
-  }
+  def getValue(key: String): String = configurationMap.getOrElse(
+    key, throw new IllegalArgumentException("This key doesn't exist!"))
 }
