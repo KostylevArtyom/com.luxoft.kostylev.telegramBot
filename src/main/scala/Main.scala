@@ -1,7 +1,9 @@
 package main.scala
 
-import main.scala.telegram.Api
+import game.Game
+import game.bots.{Person, RandomMoveBot}
 
-object Main extends App{
-  println(Api.request("getMe")("result").asInstanceOf[Map[String, Any]]("username"))
+object Main extends App {
+  val game = new Game(3, 5, 3, new Person(), new RandomMoveBot())
+  game.play
 }
