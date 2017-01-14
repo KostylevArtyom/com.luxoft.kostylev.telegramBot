@@ -8,12 +8,15 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     field(i)(j) = new Cell(i, j)
 
   var isPlayer1Turn = true
+  var emptyCells = x * y
 
   def getX(): Int = x
   def getY(): Int = y
 
   def getPlayerTurn(): Int = if (isPlayer1Turn) 1 else 2
   def getPlayerNotTurn(): Int = if (isPlayer1Turn) 2 else 1
+
+  def getEmptyCellsCount(): Int = emptyCells
 
   private def markCellAsCross(x: Int, y: Int): Unit = field(x)(y).markAsCross()
   private def markCellAsNought(x: Int, y: Int): Unit = field(x)(y).markAsNought()
@@ -108,6 +111,7 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     else
       markCellAsNought(x, y)
     isPlayer1Turn = !isPlayer1Turn
+    emptyCells -= 1
   }
 
   override def toString: String = {
