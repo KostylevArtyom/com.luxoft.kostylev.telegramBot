@@ -23,11 +23,11 @@ class FieldSuite extends FunSuite {
     assert(field.getCellsMarkedWithCross() === Array(Array(true, false), Array(false, false)))
   }
 
-//  test("Get empty cells") {
-//    val field = new Field(2, 2, 2)
-//    field.makeMove(0, 0, 1)
-//    assert(field.getCellsMarkedWithCross() === Array(Array(false, true), Array(true, true)))
-//  }
+  test("Get empty cells") {
+    val field = new Field(2, 2, 2)
+    field.makeMove(0, 0, 1)
+    assert(field.getEmptyCells() === Array(Array(false, true), Array(true, true)))
+  }
 
   test("Is crosses wins") {
     val field = new Field(2, 2, 2)
