@@ -23,7 +23,7 @@ class NotLoseAbstractBot3X3 extends AbstractBot {
           else if (field.getMarkValue(1, 1) == Mark.Empty)
             (1, 1)
           else
-            (1, 2)
+            (2, 1)
         })
       }
       case 3  => {
