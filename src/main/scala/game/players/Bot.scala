@@ -1,3 +1,3 @@
-package game.bots
+package game.players
 
 abstract class Bot extends Player {}

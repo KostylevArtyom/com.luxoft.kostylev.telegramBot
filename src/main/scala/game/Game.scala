@@ -1,7 +1,7 @@
 package game
 
 import game.border.Field
-import game.bots.Player
+import game.players.Player
 
 class Game(x: Int, y: Int, elementsInARowToWin: Int, player1: Player, player2: Player) {
   val field = new Field(x, y, elementsInARowToWin)
@@ -13,6 +13,7 @@ class Game(x: Int, y: Int, elementsInARowToWin: Int, player1: Player, player2: P
       println(field.toString)
     }
     if (field.getEmptyCellsCount == 0) println("Draw!")
-    else if (field.isCrossesWins()) println("Crosses wins!") else println("Noughts wins!")
+    else if (field.isCrossesWins()) println("Crosses wins!")
+    else println("Noughts wins!")
   }
 }

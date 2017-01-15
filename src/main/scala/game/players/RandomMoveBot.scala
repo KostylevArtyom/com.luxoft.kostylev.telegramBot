@@ -1,4 +1,4 @@
-package game.bots
+package game.players
 import game.border.Field
 
 class RandomMoveBot extends Bot {

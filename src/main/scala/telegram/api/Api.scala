@@ -24,8 +24,6 @@ object Api {
       else buildIteration("?", parameters)
     }
 
-    println(address)
-
     val response = Source.fromURL(address).mkString
 
     JSON.parseFull(response) match {
@@ -36,5 +34,10 @@ object Api {
 
   def getMe(): Map[String, Any] = request("getMe")
 
-  def getMessages(): Map[String, Any] = request("getUpdates", Map("offset" -> "3.41588364E10", "allowed_updates" -> "message"))
+  def getMessages(): Map[String, Any] = {
+    var messageOffset = "0"
+    val response = request("getUpdates", Map("offset" -> messageOffset, "allowed_updates" -> "message"))
+//    messageOffset = ???
+    response
+  }
 }
