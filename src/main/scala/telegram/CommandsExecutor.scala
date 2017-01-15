@@ -1,7 +1,7 @@
 package telegram
 
 import game.games.Classic3x3FieldGame
-import game.players.{Person, RandomMoveBot}
+import game.players.Person
 import info.mukel.telegrambot4s.api.{Commands, Polling, TelegramBot}
 import info.mukel.telegrambot4s.methods.SendMessage
 

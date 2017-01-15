@@ -1,10 +1,12 @@
 package game.players
-import  game.border.Field
+import game.border.Field
+
+import scala.io.StdIn
 
 class Person extends Player {
   override def makeMove(field: Field): (Int, Int) = {
-//    val x = askXYValues._1
-//    val y = askXYValues._2
+    val x = StdIn.readInt
+    val y = StdIn.readInt
     require(field.isCellEmpty(x, y), "Cell is not empty.")
     (x, y)
   }

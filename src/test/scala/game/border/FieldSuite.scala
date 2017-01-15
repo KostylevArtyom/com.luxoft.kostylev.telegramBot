@@ -6,7 +6,7 @@ class FieldSuite extends FunSuite {
   test("First player moved - second player turn") {
     val field = new Field(3, 3, 3)
     field.makeMove(0, 0, 1)
-    assert(field.isPlayer1Turn === false)
+    assert(field.getPlayerTurn === 2)
   }
 
   test("Empty cells counts") {
@@ -14,19 +14,19 @@ class FieldSuite extends FunSuite {
     field.makeMove(0, 0, 1)
     field.makeMove(1, 0, 2)
     field.makeMove(0, 1, 1)
-    assert(field.emptyCells === 1)
+    assert(field.getEmptyCellsCount() === 1)
   }
 
   test("Get cells marked with cross") {
     val field = new Field(2, 2, 2)
     field.makeMove(0, 0, 1)
-    assert(field.getCellsMarkedWithCross() === Array(Array(true, false), Array(false, false)))
+    assert(field.getCellsMarkedWithCross() === Array((0, 0)))
   }
 
   test("Get empty cells") {
     val field = new Field(2, 2, 2)
     field.makeMove(0, 0, 1)
-    assert(field.getEmptyCells() === Array(Array(false, true), Array(true, true)))
+    assert(field.getEmptyCells() === Array((0, 1), (1, 0), (1, 1)))
   }
 
   test("Is crosses wins") {

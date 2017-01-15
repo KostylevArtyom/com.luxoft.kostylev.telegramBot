@@ -22,6 +22,6 @@ class Cell (x: Int, y: Int) {
   override def toString: String = mark match {
     case Mark.Cross => "X"
     case Mark.Nought => "O"
-    case Mark.Empty => "•"
+    case Mark.Empty => "*"
   }
 }

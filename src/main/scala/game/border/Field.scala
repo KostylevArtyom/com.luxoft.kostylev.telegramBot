@@ -2,6 +2,8 @@ package game.border
 
 import game.border.Mark.MarkValue
 
+import scala.collection.mutable.ArrayBuffer
+
 class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   require((elementsInARowToWin <= x) && (elementsInARowToWin <= y), "Elements in a row to win value should be less than x and y.")
 
@@ -9,8 +11,8 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   for {i <- 0 until x; j <- 0 until y}
     field(i)(j) = new Cell(i, j)
 
-  var isPlayer1Turn = true
-  var emptyCells = x * y
+  private var isPlayer1Turn = true
+  private var emptyCells = x * y
 
   def getX(): Int = x
   def getY(): Int = y
@@ -23,32 +25,30 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   private def markCellAsCross(x: Int, y: Int): Unit = field(x)(y).markAsCross()
   private def markCellAsNought(x: Int, y: Int): Unit = field(x)(y).markAsNought()
 
-  private def getCellsMarkedWithMarkValue(markValue: MarkValue): Array[Array[Boolean]] = {
-    def getMarkedCellsInAField(array: Array[Array[Cell]], markedField: Array[Array[Boolean]], x: Int): Array[Array[Boolean]] = {
+  def getCellsMarkedWithMarkValue(markValue: MarkValue): Array[(Int, Int)] = {
+    def getMarkedCellsInAField(array: Array[Array[Cell]], markedCells: ArrayBuffer[(Int, Int)], x: Int): Array[(Int, Int)] = {
       if (array.isEmpty)
-        markedField
-      else getMarkedCellsInAField(array.tail, {
-        markedField(x) = getMarkedCellsInARow(array.head, new Array[Boolean](y), x, 0)
-        markedField
-      }, x + 1)
+        markedCells.toArray
+      else getMarkedCellsInAField(array.tail, markedCells ++ getMarkedCellsInARow(array.head, new ArrayBuffer[(Int, Int)], x, 0), x + 1)
     }
-    def getMarkedCellsInARow(array: Array[Cell], markedField: Array[Boolean], x: Int, y: Int): Array[Boolean] = {
+
+    def getMarkedCellsInARow(array: Array[Cell], markedCells: ArrayBuffer[(Int, Int)], x: Int, y: Int): ArrayBuffer[(Int, Int)] = {
       if (array.isEmpty)
-        markedField
+        markedCells
       else getMarkedCellsInARow(array.tail, {
-        if (field(x)(y).isMarkValue(markValue)) markedField(y) = true
-        markedField
+        if (field(x)(y).isMarkValue(markValue)) markedCells += Tuple2(x, y)
+        markedCells
       }, x, y + 1)
     }
 
-    getMarkedCellsInAField(field, Array.ofDim[Boolean](x, y), 0)
+    getMarkedCellsInAField(field, new ArrayBuffer[(Int, Int)], 0)
   }
 
-  def getCellsMarkedWithCross(): Array[Array[Boolean]] = getCellsMarkedWithMarkValue(Mark.Cross)
+  def getCellsMarkedWithCross(): Array[(Int, Int)] = getCellsMarkedWithMarkValue(Mark.Cross)
 
-  def getCellsMarkedWithNought(): Array[Array[Boolean]] = getCellsMarkedWithMarkValue(Mark.Nought)
+  def getCellsMarkedWithNought(): Array[(Int, Int)] = getCellsMarkedWithMarkValue(Mark.Nought)
 
-  def getEmptyCells(): Array[Array[Boolean]] = getCellsMarkedWithMarkValue(Mark.Empty)
+  def getEmptyCells(): Array[(Int, Int)] = getCellsMarkedWithMarkValue(Mark.Empty)
 
   def getMarkValue(x: Int, y: Int): MarkValue = field(x)(y).getMarkValue
 
