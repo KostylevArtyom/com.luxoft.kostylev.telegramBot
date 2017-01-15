@@ -99,7 +99,7 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     require((((playerNumber == 1) && isPlayer1Turn) || ((playerNumber == 2) && !isPlayer1Turn)), "Not this player turn.")
   }
 
-  def isPlayerWins(playerNumber: Int):Boolean = {
+  def isPlayerWins(playerNumber: Int): Boolean = {
     checkIfPlayerNumberInRange(playerNumber)
     if (playerNumber == 1) isCrossesWins else isNoughtsWins
   }
