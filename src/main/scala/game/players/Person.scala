@@ -1,10 +1,10 @@
 package game.players
 import  game.border.Field
 
-class Person(askXYValues: => (Int, Int)) extends Player {
+class Person extends Player {
   override def makeMove(field: Field): (Int, Int) = {
-    val x = askXYValues._1
-    val y = askXYValues._2
+//    val x = askXYValues._1
+//    val y = askXYValues._2
     require(field.isCellEmpty(x, y), "Cell is not empty.")
     (x, y)
   }
