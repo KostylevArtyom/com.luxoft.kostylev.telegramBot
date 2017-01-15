@@ -3,6 +3,8 @@ package game.border
 import game.border.Mark.MarkValue
 
 class Field(x: Int, y: Int, elementsInARowToWin: Int) {
+  require((elementsInARowToWin <= x) && (elementsInARowToWin <= y), "Elements in a row to win value should be less than x and y.")
+
   val field = Array.ofDim[Cell](x, y)
   for {i <- 0 until x; j <- 0 until y}
     field(i)(j) = new Cell(i, j)
@@ -39,7 +41,7 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
       }, x, y + 1)
     }
 
-    getMarkedCellsInAField(field, Array.ofDim[Boolean](3, 5), 0)
+    getMarkedCellsInAField(field, Array.ofDim[Boolean](x, y), 0)
   }
 
   def getCellsMarkedWithCross(): Array[Array[Boolean]] = getCellsMarkedWithMarkValue(Mark.Cross)
@@ -89,22 +91,23 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
 
   def isNoughtsWins(): Boolean = isMarkValueWins(Mark.Nought)
 
-  def checkIfPlayerNumberInrange(playerNumber: Int): Unit = {
+  private def checkIfPlayerNumberInRange(playerNumber: Int): Unit = {
     require((playerNumber == 1) || (playerNumber == 2), "Player number should be 1 or 2.")
   }
 
-  def checkIfPlayerNumberCorrect(playerNumber: Int): Unit = {
+  private def checkIfPlayerNumberCorrect(playerNumber: Int): Unit = {
     require((((playerNumber == 1) && isPlayer1Turn) || ((playerNumber == 2) && !isPlayer1Turn)), "Not this player turn.")
   }
 
   def isPlayerWins(playerNumber: Int):Boolean = {
-    checkIfPlayerNumberInrange(playerNumber)
+    checkIfPlayerNumberInRange(playerNumber)
     if (playerNumber == 1) isCrossesWins else isNoughtsWins
   }
 
   def makeMove(x: Int, y: Int, playerNumber: Int): Unit = {
-    checkIfPlayerNumberInrange(playerNumber)
+    checkIfPlayerNumberInRange(playerNumber)
     checkIfPlayerNumberCorrect(playerNumber)
+    require(emptyCells > 0, "Field is filled.")
     require(isCellEmpty(x, y), "Cell should be empty.")
     if (playerNumber == 1)
       markCellAsCross(x, y)

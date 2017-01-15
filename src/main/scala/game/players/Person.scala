@@ -1,5 +1,5 @@
 package game.players
-import game.border.Field
+import  game.border.Field
 
 import scala.io.StdIn
 
