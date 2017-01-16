@@ -18,9 +18,10 @@ class NotLoseAbstractBot3X3 extends AbstractBot {
       }
       case 5  => {
         winningMove(field, Mark.Cross).getOrElse({
-          if (field.getCellsMarkedWithCross() == ((0, 0), (0, 2)) && (field.getCellsMarkedWithNought() == ((0, 1), (2, 2))))
+          if ((field.getCellsMarkedWithCross() sameElements Array((0, 0), (0, 2))) &&
+            (field.getCellsMarkedWithNought() sameElements Array((0, 1), (2, 2))))
             (2, 0)
-          else if (field.getMarkValue(1, 1) == Mark.Empty)
+          else if (field.isCellEmpty(1, 1))
             (1, 1)
           else
             (2, 1)
@@ -34,6 +35,47 @@ class NotLoseAbstractBot3X3 extends AbstractBot {
         )
       }
       case 1  => field.getEmptyCells().head
+
+      case 8  => {
+        if (field.isCellEmpty(1, 1))
+          (1, 1)
+        else
+          (0, 0)
+      }
+
+      case 6  => {
+        winningMove(field, Mark.Cross).getOrElse(
+          if ((field.getCellsMarkedWithCross() sameElements Array((1, 1), (2, 2))) &&
+            (field.getCellsMarkedWithNought() sameElements Array((0, 0))))
+            (0, 2)
+          else if ((field.getCellsMarkedWithNought() sameElements Array((1, 1))) &&
+            (
+              (field.getCellsMarkedWithCross() sameElements Array((0, 0), (2, 2))) ||
+              (field.getCellsMarkedWithCross() sameElements Array((0, 2), (2, 0)))))
+            (0, 1)
+          else {
+            val firstX = field.getCellsMarkedWithCross().head
+            val secondX = field.getCellsMarkedWithCross().tail.head
+            (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+          }
+        )
+      }
+      case 4  => {
+        winningMove(field, Mark.Nought).getOrElse(
+          winningMove(field, Mark.Cross).getOrElse({
+            val firstX = field.getCellsMarkedWithNought().head
+            val secondX = field.getCellsMarkedWithNought().tail.head
+            (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+          })
+        )
+      }
+      case 2  => {
+        winningMove(field, Mark.Nought).getOrElse(
+          winningMove(field, Mark.Cross).getOrElse(
+            field.getEmptyCells().head
+          )
+        )
+      }
     }
   }
 
@@ -53,7 +95,7 @@ class NotLoseAbstractBot3X3 extends AbstractBot {
 
     for (line <- lines) {
       val diff = line filterNot markedCells.contains
-      if((diff.count(_ => true) == 1) && (field.getMarkValue(diff.head._1, diff.head._2) == Mark.Empty))
+      if((diff.count(_ => true) == 1) && field.isCellEmpty(diff.head._1, diff.head._2))
         return Option.apply((diff.head._1, diff.head._2))
     }
     Option.empty

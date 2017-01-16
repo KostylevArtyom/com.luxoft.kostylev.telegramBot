@@ -10,5 +10,5 @@ import utils.ResourcesParser
 object Main extends App {
 //  new CommandsExecutor(ResourcesParser.getValue("api_token")).run
 
-  new Classic3x3FieldGame(new NotLoseAbstractBot3X3(), new Person(), x => println(x)).play
+  new Classic3x3FieldGame(new Person(), new NotLoseAbstractBot3X3(), x => println(x)).play
 }
