@@ -1,7 +1,7 @@
 package games
 
 import game.border.Field
-import game.players.{Person, Player}
+import game.players.{ConsolePerson, Player}
 import game.players.bots.NotLoseBot3X3
 
 import scala.io.StdIn
@@ -14,9 +14,9 @@ class Console3x3PersonVsBotGame {
     var player1 = NotLoseBot3X3.asInstanceOf[Player]
     var player2 = NotLoseBot3X3.asInstanceOf[Player]
     if (x == 2)
-      player2 = Person
+      player2 = ConsolePerson
     else
-      player1 = Person
+      player1 = ConsolePerson
 
     while (field.getWinner == -1) {
       val move = if (field.getPlayerTurn == 1) player1.makeMove(field) else player2.makeMove(field)

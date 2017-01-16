@@ -3,7 +3,7 @@ import game.border.Field
 
 import scala.io.StdIn
 
-object Person extends Player {
+object ConsolePerson extends Player {
   override def makeMove(field: Field): (Int, Int) = {
     val x = StdIn.readInt
     val y = StdIn.readInt
