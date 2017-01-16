@@ -2,7 +2,7 @@ package game.players.bots
 
 import game.border.{Field, Mark}
 
-class NotLoseAbstractBot3X3 extends AbstractBot {
+object NotLoseAbstractBot3X3 extends AbstractBot {
   override def makeMove(field: Field): (Int, Int) = {
     field.getEmptyCellsCount match {
       case 9  => (0, 0)
@@ -44,28 +44,39 @@ class NotLoseAbstractBot3X3 extends AbstractBot {
       }
 
       case 6  => {
-        winningMove(field, Mark.Cross).getOrElse(
+        winningMove(field, Mark.Cross).getOrElse({
           if ((field.getCellsMarkedWithCross() sameElements Array((1, 1), (2, 2))) &&
             (field.getCellsMarkedWithNought() sameElements Array((0, 0))))
-            (0, 2)
-          else if ((field.getCellsMarkedWithNought() sameElements Array((1, 1))) &&
-            (
-              (field.getCellsMarkedWithCross() sameElements Array((0, 0), (2, 2))) ||
-              (field.getCellsMarkedWithCross() sameElements Array((0, 2), (2, 0)))))
-            (0, 1)
-          else {
-            val firstX = field.getCellsMarkedWithCross().head
-            val secondX = field.getCellsMarkedWithCross().tail.head
-            (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+            return (0, 2)
+          else if (field.getCellsMarkedWithNought() sameElements Array((1, 1))) {
+            if ((field.getCellsMarkedWithCross() sameElements Array((0, 0), (2, 2))) ||
+              (field.getCellsMarkedWithCross() sameElements Array((0, 2), (2, 0))))
+              return (0, 1)
+            if ((field.getCellsMarkedWithCross() sameElements Array((1, 0), (1, 2))) ||
+              (field.getCellsMarkedWithCross() sameElements Array((0, 1), (2, 1))))
+              return (0, 0)
+            if ((field.getCellsMarkedWithCross() sameElements Array((0, 1), (1, 0))) ||
+              (field.getCellsMarkedWithCross() sameElements Array((1, 2), (2, 1))) ||
+              (field.getCellsMarkedWithCross() sameElements Array((0, 1), (1, 2))))
+              return (0, 2)
+            if ((field.getCellsMarkedWithCross() sameElements Array((1, 0), (2, 1))))
+              return (2, 0)
           }
-        )
+
+          val firstX = field.getCellsMarkedWithCross().head
+          val secondX = field.getCellsMarkedWithCross().tail.head
+          (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+        })
       }
       case 4  => {
         winningMove(field, Mark.Nought).getOrElse(
           winningMove(field, Mark.Cross).getOrElse({
             val firstX = field.getCellsMarkedWithNought().head
             val secondX = field.getCellsMarkedWithNought().tail.head
-            (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+            if (field.isCellEmpty(3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2))
+              (3 - firstX._1 - secondX._1, 3 - firstX._2 - secondX._2)
+            else
+              field.getEmptyCells().head
           })
         )
       }
