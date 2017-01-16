@@ -1,4 +1,4 @@
-package games
+package implementations
 
 import game.border.Field
 import game.players.{ConsolePerson, Player}

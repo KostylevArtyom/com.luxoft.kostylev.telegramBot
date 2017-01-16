@@ -1,6 +1,6 @@
 package main.scala
 
-import games.TelegramGame
+import implementations.TelegramGame
 import utils.ResourcesParser
 
 object Main extends App {

@@ -1,4 +1,4 @@
-package games
+package implementations
 
 import game.border.Field
 import game.players.bots.{AbstractBot, NotLoseBot3X3, RandomMoveBot}
@@ -6,15 +6,20 @@ import info.mukel.telegrambot4s.api._
 import info.mukel.telegrambot4s.methods._
 import info.mukel.telegrambot4s.models.Message
 
+import scala.collection.mutable
 import scala.util.Try
 
 class TelegramGame(val token: String) extends TelegramBot with Polling with Commands {
 
-  var isGameRun = false
-  var isPlayerFirst = true
-  var isPlayerMoves = true
-  var field = new Field(3, 3, 3)
-  var bot = RandomMoveBot.asInstanceOf[AbstractBot]
+  case class GameState(field: Field, bot: AbstractBot) {
+    var isGameRun = false
+    var isPlayerFirst = true
+    var isPlayerMoves = true
+  }
+
+  var gameStatesMap = mutable.Map[Long, GameState]()
+  def getGameState(userId: Long): GameState = gameStatesMap(userId)
+  def addGameState(userId: Long, field: Field, bot: AbstractBot): Unit = gameStatesMap(userId) = new GameState(field, bot)
 
   class PreparedMessage(msg: Message, var s: String) {
     def add(s: String): Unit = this.s = this.s concat "\n\n" concat s
@@ -49,33 +54,31 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
   def runClassicGameCommand(msg: Message, arg0: String): Unit = {
     def runClassicGame(isPlayerFirst: Boolean): Unit = {
       new PreparedMessage(msg, "New game Starts!").send()
-      this.isGameRun = true
-      this.field = new Field(3, 3, 3)
-      this.isPlayerFirst = isPlayerFirst
-      this.bot = NotLoseBot3X3
+      addGameState(msg.sender, new Field(3, 3, 3), NotLoseBot3X3)
+      getGameState(msg.sender).isGameRun = true
+      getGameState(msg.sender).isPlayerFirst = isPlayerFirst
     }
 
     val arg = arg0.toLowerCase()
     var preparedMessage = new PreparedMessage(msg, "")
     if (checkIfNought(arg)) {
       runClassicGame(false)
-      preparedMessage = makeMoveBot(preparedMessage, msg, bot, field)
+      preparedMessage = makeMoveBot(preparedMessage, msg)
       preparedMessage.add("Your move!")
     } else if (checkIfCross(arg)) {
       runClassicGame(true)
       preparedMessage.add("Your move!")
     } else preparedMessage.add("Wrong parameter!")
-    isPlayerMoves = true
+    getGameState(msg.sender).isPlayerMoves = true
     preparedMessage.send()
   }
 
   def runCustomGameCommand(msg: Message, args: Seq[String]): Unit = {
     def runCustomGame(x: Int, y: Int, elementsInARowToWin: Int, isPlayerFirst: Boolean): Unit = {
       new PreparedMessage(msg, "New game Starts!").send()
-      this.isGameRun = true
-      this.field = new Field(x, y, elementsInARowToWin)
-      this.isPlayerFirst = isPlayerFirst
-      this.bot = RandomMoveBot
+      addGameState(msg.sender, new Field(x, y, elementsInARowToWin), RandomMoveBot)
+      getGameState(msg.sender).isGameRun = true
+      getGameState(msg.sender).isPlayerFirst = isPlayerFirst
     }
 
     var preparedMessage = new PreparedMessage(msg, "")
@@ -92,14 +95,14 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
         val arg4Formatted = arg4.getOrElse("")
         if (checkIfNought(arg4Formatted)) {
           runCustomGame(arg1.get, arg2.get, arg3.get, false)
-          preparedMessage = makeMoveBot(preparedMessage, msg, bot, field)
+          preparedMessage = makeMoveBot(preparedMessage, msg)
           preparedMessage.add("Your move!")
         } else if (checkIfCross(arg4Formatted)) {
           runCustomGame(arg1.get, arg2.get, arg3.get, true)
           preparedMessage.add("Your move!")
         } else preparedMessage.add("Wrong parameter!")
 
-        isPlayerMoves = true
+        getGameState(msg.sender).isPlayerMoves = true
       }
     }
     preparedMessage.send()
@@ -107,42 +110,43 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
 
   def makeMoveCommand(msg: Message, arg0: String): Unit = {
     val arg = Try(arg0.toInt).toOption
+    val field = getGameState(msg.sender).field
     var preparedMessage = new PreparedMessage(msg, "")
-    if (!isGameRun)
+    if (!getGameState(msg.sender).isGameRun)
       preparedMessage.add("Game is not started! Start new one with /playclassicgame or /playcustomgame command.")
     else if ((arg.isEmpty) || (arg.get < 1) || (arg.get > field.getX * field.getY))
       preparedMessage.add("Parameter should be a number from 1 to " + field.getX * field.getY + "!")
     else {
-      preparedMessage = makeMovePerson(preparedMessage, field, arg.get - 1)
-      if ((field.getEmptyCellsCount > 0) && (!isPlayerMoves) && (field.getWinner() == -1))
-        preparedMessage = makeMoveBot(preparedMessage, msg, bot, field)
+      preparedMessage = makeMovePerson(preparedMessage, msg, field, arg.get - 1)
+      if ((field.getEmptyCellsCount > 0) && (!getGameState(msg.sender).isPlayerMoves) && (field.getWinner() == -1))
+        preparedMessage = makeMoveBot(preparedMessage, msg)
       if (field.getWinner() != -1) {
         preparedMessage.add(field.getWinnerMessage)
-        isGameRun = false
+        getGameState(msg.sender).isGameRun = false
       }
       else preparedMessage.add("Your move!")
     }
     preparedMessage.send()
   }
 
-  def makeMovePerson(preparedMessage: PreparedMessage, field: Field, number: Int): PreparedMessage = {
+  def makeMovePerson(preparedMessage: PreparedMessage, msg: Message, field: Field, number: Int): PreparedMessage = {
     val x = number / field.getY
     val y = number % field.getY
     if (!field.isCellEmpty(x, y))
       preparedMessage.add("Cell fills already! Choose another cell!")
     else {
-      field.makeMove(x, y, {if (isPlayerFirst) 1 else 2})
-      isPlayerMoves = false
+      field.makeMove(x, y, {if (getGameState(msg.sender).isPlayerFirst) 1 else 2})
+      getGameState(msg.sender).isPlayerMoves = false
       preparedMessage.add(field.toString)
     }
     preparedMessage
   }
 
-  def makeMoveBot(preparedMessage: PreparedMessage, msg: Message, bot: AbstractBot, field: Field): PreparedMessage = {
+  def makeMoveBot(preparedMessage: PreparedMessage, msg: Message): PreparedMessage = {
     preparedMessage.add("Bot makes a move!")
-    val move = bot.makeMove(field)
-    field.makeMove(move._1, move._2, {if (isPlayerFirst) 2 else 1})
-    preparedMessage.add(field.toString)
+    val move = getGameState(msg.sender).bot.makeMove(getGameState(msg.sender).field)
+    getGameState(msg.sender).field.makeMove(move._1, move._2, {if (getGameState(msg.sender).isPlayerFirst) 2 else 1})
+    preparedMessage.add(getGameState(msg.sender).field.toString)
     preparedMessage
   }
 }
