@@ -34,7 +34,8 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
     "Command list:\n\n" +
     "/start - show greeting message\n" +
     "/playclassicgame [%s] - starts new 3x3 game with HARD bot. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
-    "/playcustomgame %i1 %i2 %i3 [%s] - starts new i1xi2 game with RANDOMMOVE bot. Game tills until %i3 values in a row will be. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
+    "/playcustomgame %i1 %i2 %i3 [%s] - starts new i1xi2 game with RANDOMMOVE bot. " +
+      "Game tills until %i3 values in a row will be. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
     "/move %i - make new move. %i - number of cell. For example, for 3x3 game, %i can be from 1 to 9.\n" +
     "/help - show help message\n") }
 
