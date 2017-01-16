@@ -106,7 +106,6 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
   }
 
   def makeMoveCommand(msg: Message, arg0: String): Unit = {
-    println((field.getWinner != -1))
     val arg = Try(arg0.toInt).toOption
     var preparedMessage = new PreparedMessage(msg, "")
     if (!isGameRun)
@@ -115,9 +114,9 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
       preparedMessage.add("Parameter should be a number from 1 to " + field.getX * field.getY + "!")
     else {
       preparedMessage = makeMovePerson(preparedMessage, field, arg.get - 1)
-      if ((field.getEmptyCellsCount > 0) && (!isPlayerMoves))
+      if ((field.getEmptyCellsCount > 0) && (!isPlayerMoves) && (field.getWinner() == -1))
         preparedMessage = makeMoveBot(preparedMessage, msg, bot, field)
-      if (field.getWinner != -1) {
+      if (field.getWinner() != -1) {
         preparedMessage.add(field.getWinnerMessage)
         isGameRun = false
       }
@@ -139,9 +138,9 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
     preparedMessage
   }
 
-  def makeMoveBot(preparedMessage: PreparedMessage, msg: Message, abstractBot: AbstractBot, field: Field): PreparedMessage = {
+  def makeMoveBot(preparedMessage: PreparedMessage, msg: Message, bot: AbstractBot, field: Field): PreparedMessage = {
     preparedMessage.add("Bot makes a move!")
-    val move = abstractBot.makeMove(field)
+    val move = bot.makeMove(field)
     field.makeMove(move._1, move._2, {if (isPlayerFirst) 2 else 1})
     preparedMessage.add(field.toString)
     preparedMessage

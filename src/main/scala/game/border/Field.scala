@@ -138,13 +138,11 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   override def toString: String = {
     def fieldToString(array: Array[Array[Cell]], accumulator: String): String = {
       if (array.isEmpty) accumulator
-      else
-        fieldToString(array.tail, accumulator + elementToString(array.head, "") + "\n")
+      else fieldToString(array.tail, accumulator + elementToString(array.head, "") + "\n")
     }
     def elementToString(array: Array[Cell], accumulator: String): String = {
       if (array.isEmpty) accumulator
-      else
-        elementToString(array.tail, accumulator + array.head.toString)
+      else elementToString(array.tail, accumulator + array.head.toString)
     }
 
     fieldToString(field, "")
