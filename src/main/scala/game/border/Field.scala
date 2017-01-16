@@ -78,7 +78,7 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
         for {i <- 1 until elementsInARowToWin}
           if (!field(currentI + vector._1 * i)(currentJ + vector._2 * i).isMarkValue(markValue))
             return false
-        true
+      true
     }
 
     for {currentI <- 0 until x}
@@ -128,12 +128,12 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     else -1
   }
 
-  def printWinner(print: String => Unit): Unit = {
+  def getWinnerMessage(): String = {
     getWinner() match {
-      case 0 => print("Draw!")
-      case 1 => print("Crosses wins!")
-      case 2 => print("Noughts wins!")
-      case -1 => print("Still playing")
+      case 0 => "Draw!"
+      case 1 => "Crosses wins!"
+      case 2 => "Noughts wins!"
+      case -1 => "Still playing"
     }
   }
 

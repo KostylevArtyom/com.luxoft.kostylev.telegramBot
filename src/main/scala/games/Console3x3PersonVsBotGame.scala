@@ -24,6 +24,6 @@ class Console3x3PersonVsBotGame {
       println(field)
     }
 
-    field.printWinner(x => println(x))
+    println(field.getWinnerMessage)
   }
 }
