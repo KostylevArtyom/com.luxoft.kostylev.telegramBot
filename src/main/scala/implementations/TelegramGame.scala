@@ -18,7 +18,8 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
 
   var gameStatesMap = mutable.Map[Long, GameState]()
   def getGameState(userId: Long): GameState = gameStatesMap(userId)
-  def addGameState(userId: Long, field: Field, bot: AbstractBot): Unit = gameStatesMap(userId) = new GameState(field, bot)
+  def addGameState(userId: Long, field: Field, bot: AbstractBot): Unit =
+    gameStatesMap(userId) = new GameState(field, bot)
 
   class PreparedMessage(userId: Long, var s: String) {
     def add(s: String): Unit = this.s = this.s concat "\n\n" concat s
@@ -26,16 +27,18 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
   }
 
   on("/start", "Start") {
-    implicit msg => _ => reply("Hi, " + msg.from.get.firstName + "! Do you wanna play tic-tac-toe game?")}
+    implicit msg => _ =>
+      reply("Hi, " + msg.from.get.firstName + "! Do you wanna play tic-tac-toe game?")}
 
   on("/help", "Help") {
     implicit msg => _ => reply(
     "Tic-tac-toe bot.\n\n" +
     "Command list:\n\n" +
     "/start - show greeting message\n" +
-    "/playclassicgame [%s] - starts new 3x3 game with HARD bot. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
+    "/playclassicgame [%s] - starts new 3x3 game with HARD bot. " +
+    "%s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
     "/playcustomgame %i1 %i2 %i3 [%s] - starts new i1xi2 game with RANDOMMOVE bot. " +
-      "Game tills until %i3 values in a row will be. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
+    "Game tills until %i3 values in a row will be. %s parameter can be (x, 1) or (o, 0, 2). 1 by default\n" +
     "/move %i - make new move. %i - number of cell. For example, for 3x3 game, %i can be from 1 to 9.\n" +
     "/help - show help message\n") }
 
@@ -48,8 +51,17 @@ class TelegramGame(val token: String) extends TelegramBot with Polling with Comm
   on("/move", "Make move") {
     implicit msg => args => makeMoveCommand(msg.sender, {if (args.isEmpty) "" else args.head}) }
 
-  def checkIfNought(string: String): Boolean = (string == "0") || (string == "o") || (string == "2") || (string == "nought")
-  def checkIfCross(string: String): Boolean = (string == "") || (string == "x") || (string == "1") || (string == "cross")
+  def checkIfNought(string: String): Boolean =
+    (string == "0") ||
+    (string == "o") ||
+    (string == "2") ||
+    (string == "nought")
+
+  def checkIfCross(string: String): Boolean =
+    (string == "") ||
+    (string == "x") ||
+    (string == "1") ||
+    (string == "cross")
 
   def runClassicGameCommand(userId: Long, arg0: String): Unit = {
     def runClassicGame(isPlayerFirst: Boolean): Unit = {

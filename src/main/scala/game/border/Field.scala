@@ -5,7 +5,8 @@ import game.border.Mark.MarkValue
 import scala.collection.mutable.ArrayBuffer
 
 class Field(x: Int, y: Int, elementsInARowToWin: Int) {
-  require((elementsInARowToWin <= x) && (elementsInARowToWin <= y), "Elements in a row to win value should be less than x and y.")
+  require((elementsInARowToWin <= x) && (elementsInARowToWin <= y),
+    "Elements in a row to win value should be less than x and y.")
 
   val field = Array.ofDim[Cell](x, y)
   for {i <- 0 until x; j <- 0 until y}
@@ -26,13 +27,16 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   private def markCellAsNought(x: Int, y: Int): Unit = field(x)(y).markAsNought()
 
   def getCellsMarkedWithMarkValue(markValue: MarkValue): Array[(Int, Int)] = {
-    def getMarkedCellsInAField(array: Array[Array[Cell]], markedCells: ArrayBuffer[(Int, Int)], x: Int): Array[(Int, Int)] = {
+    def getMarkedCellsInAField(array: Array[Array[Cell]],
+                               markedCells: ArrayBuffer[(Int, Int)], x: Int): Array[(Int, Int)] = {
       if (array.isEmpty)
         markedCells.toArray
-      else getMarkedCellsInAField(array.tail, markedCells ++ getMarkedCellsInARow(array.head, new ArrayBuffer[(Int, Int)], x, 0), x + 1)
+      else getMarkedCellsInAField(array.tail,
+        markedCells ++ getMarkedCellsInARow(array.head, new ArrayBuffer[(Int, Int)], x, 0), x + 1)
     }
 
-    def getMarkedCellsInARow(array: Array[Cell], markedCells: ArrayBuffer[(Int, Int)], x: Int, y: Int): ArrayBuffer[(Int, Int)] = {
+    def getMarkedCellsInARow(array: Array[Cell], markedCells: ArrayBuffer[(Int, Int)],
+                             x: Int, y: Int): ArrayBuffer[(Int, Int)] = {
       if (array.isEmpty)
         markedCells
       else getMarkedCellsInARow(array.tail, {
@@ -96,7 +100,8 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   }
 
   private def checkIfPlayerNumberCorrect(playerNumber: Int): Unit = {
-    require((((playerNumber == 1) && isPlayer1Turn) || ((playerNumber == 2) && !isPlayer1Turn)), "Not this player turn.")
+    require((((playerNumber == 1) && isPlayer1Turn) || ((playerNumber == 2) && !isPlayer1Turn)),
+      "Not this player turn.")
   }
 
   def isPlayerWins(playerNumber: Int): Boolean = {
