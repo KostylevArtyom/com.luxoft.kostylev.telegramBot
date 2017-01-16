@@ -1,8 +1,10 @@
 package main.scala
 
-import telegram.CommandsExecutor
+import games.{Console3x3PersonVsBotGame, TelegramGame}
 import utils.ResourcesParser
 
 object Main extends App {
-  new CommandsExecutor(ResourcesParser.getValue("api_token")).run
+//  new TelegramGame(ResourcesParser.getValue("api_token")).run
+
+  new Console3x3PersonVsBotGame().run()
 }

@@ -1,12 +1,9 @@
-package telegram
+package games
 
-import game.games.Classic3x3FieldGame
-import game.players.Person
 import info.mukel.telegrambot4s.api.{Commands, Polling, TelegramBot}
-import info.mukel.telegrambot4s.methods.SendMessage
 
-class CommandsExecutor (val token: String) extends TelegramBot with Polling with Commands {
-  on("/start", "Start") { implicit msg => _ => reply("Hi, " + msg.from.get.firstName + "! Do you wanna play tic-tac-toe game?") }
+class TelegramGame(val token: String) extends TelegramBot with Polling with Commands {
+  on("/start", "Start") { implicit msg => _ => reply("Hi, " + msg.from.get.firstName + "! Do you wanna play tic-tac-toe game?")}
   on("/help", "Help") { implicit msg => _ => reply(
     "Tic-tac-toe bot.\n\n" +
     "Command list:\n\n" +

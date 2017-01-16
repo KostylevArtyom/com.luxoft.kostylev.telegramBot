@@ -109,12 +109,32 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     checkIfPlayerNumberCorrect(playerNumber)
     require(emptyCells > 0, "Field is filled.")
     require(isCellEmpty(x, y), "Cell should be empty.")
+    require(getWinner == -1, "Match ended already.")
     if (playerNumber == 1)
       markCellAsCross(x, y)
     else
       markCellAsNought(x, y)
     isPlayer1Turn = !isPlayer1Turn
     emptyCells -= 1
+  }
+
+  def getWinner(): Int = {
+    if (isCrossesWins())
+      1
+    else if (isNoughtsWins())
+      2
+    else if (getEmptyCellsCount == 0)
+      0
+    else -1
+  }
+
+  def printWinner(print: String => Unit): Unit = {
+    getWinner() match {
+      case 0 => print("Draw!")
+      case 1 => print("Crosses wins!")
+      case 2 => print("Noughts wins!")
+      case -1 => print("Still playing")
+    }
   }
 
   override def toString: String = {

@@ -2,7 +2,7 @@ package game.players.bots
 
 import game.border.Field
 
-object RandomMoveAbstractBot extends AbstractBot {
+object RandomMoveBot extends AbstractBot {
   override def makeMove(field: Field): (Int, Int) = {
     val rand = scala.util.Random
     val randomInt = rand.nextInt(field.getEmptyCellsCount)

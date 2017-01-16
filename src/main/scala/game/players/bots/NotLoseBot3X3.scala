@@ -2,7 +2,7 @@ package game.players.bots
 
 import game.border.{Field, Mark}
 
-object NotLoseAbstractBot3X3 extends AbstractBot {
+object NotLoseBot3X3 extends AbstractBot {
   override def makeMove(field: Field): (Int, Int) = {
     field.getEmptyCellsCount match {
       case 9  => (0, 0)
