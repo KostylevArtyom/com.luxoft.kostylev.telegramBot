@@ -110,6 +110,7 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
     require(emptyCells > 0, "Field is filled.")
     require(isCellEmpty(x, y), "Cell should be empty.")
     require(getWinner == -1, "Match ended already.")
+
     if (playerNumber == 1)
       markCellAsCross(x, y)
     else
@@ -119,12 +120,9 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
   }
 
   def getWinner(): Int = {
-    if (isCrossesWins())
-      1
-    else if (isNoughtsWins())
-      2
-    else if (getEmptyCellsCount == 0)
-      0
+    if (isCrossesWins()) 1
+    else if (isNoughtsWins()) 2
+    else if (getEmptyCellsCount == 0) 0
     else -1
   }
 
@@ -139,14 +137,12 @@ class Field(x: Int, y: Int, elementsInARowToWin: Int) {
 
   override def toString: String = {
     def fieldToString(array: Array[Array[Cell]], accumulator: String): String = {
-      if (array.isEmpty)
-        accumulator
+      if (array.isEmpty) accumulator
       else
         fieldToString(array.tail, accumulator + elementToString(array.head, "") + "\n")
     }
     def elementToString(array: Array[Cell], accumulator: String): String = {
-      if (array.isEmpty)
-        accumulator
+      if (array.isEmpty) accumulator
       else
         elementToString(array.tail, accumulator + array.head.toString)
     }

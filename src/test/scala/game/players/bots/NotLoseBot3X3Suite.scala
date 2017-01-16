@@ -1,19 +1,14 @@
 package game.players.bots
 
 import game.border.Field
-import game.players.Player
 import org.scalatest.FunSuite
 
 class NotLoseBot3X3Suite extends FunSuite {
-  class Console3x3PersonVsBotGame(notLoseBotposition: Int) {
+  class Console3x3PersonVsBotGame(notLoseBotPosition: Int) {
     def run(): Int = {
       val field = new Field(3, 3, 3)
-      var player1 = RandomMoveBot.asInstanceOf[Player]
-      var player2 = RandomMoveBot.asInstanceOf[Player]
-      if (notLoseBotposition == 2)
-        player2 = NotLoseBot3X3
-      else
-        player1 = NotLoseBot3X3
+      val player1 = if (notLoseBotPosition == 2) RandomMoveBot else NotLoseBot3X3
+      val player2 = if (notLoseBotPosition == 1) RandomMoveBot else NotLoseBot3X3
 
       while (field.getWinner == -1) {
         val move = if (field.getPlayerTurn == 1) player1.makeMove(field) else player2.makeMove(field)

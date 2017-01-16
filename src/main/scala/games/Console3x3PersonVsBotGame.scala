@@ -8,15 +8,12 @@ import scala.io.StdIn
 
 class Console3x3PersonVsBotGame {
   def run(): Unit = {
-    val field = new Field(3, 3, 3)
     println("Do you want to play first or second? 1 or 2")
+
     val x = StdIn.readInt
-    var player1 = NotLoseBot3X3.asInstanceOf[Player]
-    var player2 = NotLoseBot3X3.asInstanceOf[Player]
-    if (x == 2)
-      player2 = ConsolePerson
-    else
-      player1 = ConsolePerson
+    val field = new Field(3, 3, 3)
+    val player1 = if (x == 2) NotLoseBot3X3 else ConsolePerson
+    val player2 = if (x == 1) NotLoseBot3X3 else ConsolePerson
 
     while (field.getWinner == -1) {
       val move = if (field.getPlayerTurn == 1) player1.makeMove(field) else player2.makeMove(field)
